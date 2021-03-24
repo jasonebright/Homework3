@@ -45,6 +45,10 @@ public class MusicService extends Service {
         return musicPlayer.getMusicStatus();
     }
 
+    public void setPlayingStatus(int i){
+        musicPlayer.setMusicStatus(i);
+    }
+
     public int getMusicIndex(String str){
         return musicPlayer.getIndex(str);
     }

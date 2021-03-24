@@ -9,9 +9,11 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,10 +23,12 @@ import java.util.ArrayList;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
     TextView music;
+    ImageView image;
     Button play, restart;
     String main, s1,s2,s3;
     int indexMain, indexS1,indexS2,indexS3, prog1, prog2, prog3;
     int count = -1;
+    int temp;
 
 
     MusicService musicService;
@@ -39,6 +43,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        image = (ImageView) findViewById(R.id.imageView);
         music= (TextView) findViewById(R.id.songName);
         play= (Button) findViewById(R.id.buttonPlay);
         play.setOnClickListener(this);
@@ -47,13 +52,14 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
         Bundle b1 = getIntent().getExtras();
         main = b1.getString("main");
+        updatePicture(main);
         music.setText(main);
         //indexMain = musicService.getMusicIndex(main);
-        int temp = count;
+        temp = count;
         count = b1.getInt("count");
-        if(temp != count){
-            play.setText("Play");
-        }
+
+        Log.i("Count", count+"");
+
         s1 = b1.getString("effect1");
         s2 = b1.getString("effect2");
         s3 = b1.getString("effect3");
@@ -98,7 +104,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                             break;
                         case 1:
                             musicService.pauseMusic();
-                            play.setText("Resume");
+                            play.setText("Play");
                             break;
                         case 2:
                             indexMain = musicService.getMusicIndex(main);
@@ -109,7 +115,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case R.id.buttonRestart:
                     musicService.restartMusic();
-                    play.setText("Play");
+                    play.setText("Pause");
                     break;
             }
 
@@ -118,8 +124,28 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void updatePicture(String musicName) {
+        Log.i("Musicname", musicName);
+        switch(musicName){
+            case "Go Tech Go!":
+                image.setImageResource(R.drawable.gotechgo);
+                break;
+            case "Tech Triumph":
+                image.setImageResource(R.drawable.techtriumph);
+                break;
+            case "VPI Victory March":
+                image.setImageResource(R.drawable.vpi);
+                break;
+            case "Cheering":
+                image.setImageResource(R.drawable.cheering);
+                break;
+            case "Clapping":
+                image.setImageResource(R.drawable.clapping);
+                break;
+            case"Go Hokies!":
+                image.setImageResource(R.drawable.letsgohokies);
+                break;
+        }
 
-        music.setText(musicName);
     }
 
     @Override
@@ -182,7 +208,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     play.setText("Pause");
                     break;
                 case 2:
-                    play.setText("Resume");
+                    play.setText("Play");
                     break;
             }
         }
