@@ -117,7 +117,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void updateName(String musicName) {
+    public void updatePicture(String musicName) {
 
         music.setText(musicName);
     }

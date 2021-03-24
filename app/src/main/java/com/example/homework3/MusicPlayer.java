@@ -126,7 +126,6 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
 
 
         new Handler().postDelayed(new Runnable() {
-            //private MusicService musicService;
             @Override
             public void run() {
                 s1.start();
@@ -135,18 +134,15 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
         }, prog1);
 
         new Handler().postDelayed(new Runnable() {
-            //private MusicService musicService;
             @Override
             public void run() {
-                // >> here's choose your song file
                 s2.start();
             }
         }, prog2);
+
         new Handler().postDelayed(new Runnable() {
-            //private MusicService musicService;
             @Override
             public void run() {
-                // >> here's choose your song file
                 s3.start();
             }
         }, prog3);
@@ -284,8 +280,8 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-       /*if(mediaPlayer == s1){
-           hand1.removeCallbacks(run1);
+       /*if(mediaPlayer.equals(s1)){
+           //hand1.removeCallbacks(run1);
            s1.release();
            s1 = null;
        }
