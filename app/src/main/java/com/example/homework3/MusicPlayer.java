@@ -75,7 +75,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
         musicIndex=index;
         paused = false;
         player= MediaPlayer.create(this.musicService, MUSICPATH[musicIndex]);
-
+        timer = 0;
         player.start();
         player.setOnCompletionListener(this);
         musicService.onUpdateMusicName(getMusicName());
@@ -89,7 +89,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
         indS1 = indexS1;
         indS2 = indexS2;
         indS3 = indexS3;
-
+        Log.i("time", timer+" " + prog1 + " " + prog2 + " " + prog3+ " " );
         asyncTask = new MyAsyncTask();
         asyncTask.execute();
 
@@ -170,6 +170,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                 }
                 count = c;
                 musicIndex = index;
+                timer =0;
                 playMusic(index, indexS1, indexS2, indexS3, prog1, prog2, prog3);
 
             }
@@ -193,7 +194,9 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                 s1Pos = 0;
                 s1.release();
                 s1 = null;
-            } else {
+            } else if(s1!=null) {
+                s1.release();
+                s1 = null;
                 s1Pos = 0;
             }
             if (s2 != null && s2.isPlaying()) {
@@ -201,15 +204,19 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                 s2Pos = 0;
                 s2.release();
                 s2 = null;
-            } else {
+            } else if(s2 !=null) {
                 s2Pos = 0;
+                s2.release();
+                s2 = null;
             }
             if (s3 != null && s3.isPlaying()) {
                 s3.stop();
                 s3Pos = 0;
                 s3.release();
                 s3 = null;
-            } else {
+            } else if(s3!= null){
+                s3.release();
+                s3 = null;
                 s3Pos = 0;
             }
             musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
@@ -226,7 +233,9 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                 s1Pos = 0;
                 s1.release();
                 s1 = null;
-            } else {
+            } else if(s1!=null) {
+                s1.release();
+                s1 = null;
                 s1Pos = 0;
             }
             if (s2 != null && s2.isPlaying()) {
@@ -234,15 +243,19 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                 s2Pos = 0;
                 s2.release();
                 s2 = null;
-            } else {
+            } else if(s2 !=null) {
                 s2Pos = 0;
+                s2.release();
+                s2 = null;
             }
             if (s3 != null && s3.isPlaying()) {
                 s3.stop();
                 s3Pos = 0;
                 s3.release();
                 s3 = null;
-            } else {
+            } else if(s3!= null){
+                s3.release();
+                s3 = null;
                 s3Pos = 0;
             }
             musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
@@ -255,22 +268,60 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-       /*if(mediaPlayer.equals(s1)){
-           //hand1.removeCallbacks(run1);
+        Log.i("reached here", mediaPlayer+"");
+       if(mediaPlayer.equals(s1)){
+           Log.i("completed", "s1");
            s1.release();
            s1 = null;
+           if(s2 == null && s3== null) {
+               musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
+           }
        }
-        if(mediaPlayer == s2){
-            hand2.removeCallbacks(run2);
+        if(mediaPlayer.equals(s2)){
+            Log.i("completed", "s2");
+
             s2.release();
             s2 = null;
+            if(s1 == null && s3 == null) {
+                musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
+            }
         }
 
-        if(mediaPlayer == s3){
-            hand3.removeCallbacks(run3);
+        if(mediaPlayer.equals(s3)){
+            Log.i("completed", "s3");
+
             s3.release();
             s3 = null;
-        }*/
+            if(s2 == null && s1== null) {
+                musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
+            }
+        }
+
+        if(mediaPlayer.equals(player)){
+            asyncTask.cancel(true);
+            if(s1 != null){
+                if(s1.isPlaying()){
+                    s1.stop();
+                }
+                s1.release();
+                s1 = null;
+            }
+            if(s2 != null){
+                if(s2.isPlaying()){
+                    s2.stop();
+                }
+                s2.release();
+                s2 = null;
+            }
+            if(s3 != null){
+                if(s3.isPlaying()){
+                    s3.stop();
+                }
+                s3.release();
+                s3 = null;
+            }
+        }
+
 
     }
 
@@ -288,19 +339,22 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                     if (timer == p1) {
                         s1 = MediaPlayer.create(musicService, MUSICEFFECT[indS1]);
                         s1.start();
+                        s1.setOnCompletionListener(MusicPlayer.this);
                        musicService.onUpdateMusicName(EFFECT[indS1]);
                     }
                     if (timer == p2) {
                         s2 = MediaPlayer.create(musicService, MUSICEFFECT[indS2]);
                         s2.start();
+                        s2.setOnCompletionListener(MusicPlayer.this);
                         musicService.onUpdateMusicName(EFFECT[indS2]);
                     }
                     if (timer == p3) {
                         s3 = MediaPlayer.create(musicService, MUSICEFFECT[indS3]);
                         s3.start();
+                        s3.setOnCompletionListener(MusicPlayer.this);
                         musicService.onUpdateMusicName(EFFECT[indS3]);
                     }
-
+                    /*
                     if(timer >= p1+7 && (timer -p2 >= 7 || timer-p2 <0)  && (timer -p3 >= 7 || timer-p3 <0)){
                         musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
                     }
@@ -309,7 +363,7 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
                     }
                     if(timer >= p3+7 && (timer -p2 >= 7 || timer-p2 <0)  && (timer -p1 >= 7 || timer-p1 <0)){
                         musicService.onUpdateMusicName(MUSICNAME[musicIndex]);
-                    }
+                    }*/
 
                     Thread.sleep(1000);
                     timer++;

@@ -27,8 +27,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     Button play, restart;
     String main, s1,s2,s3;
     int indexMain, indexS1,indexS2,indexS3, prog1, prog2, prog3;
-    int count = -1;
+    int count = 0;
     int temp;
+    boolean newSong;
 
 
     MusicService musicService;
@@ -55,8 +56,13 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         updatePicture(main);
         music.setText(main);
         //indexMain = musicService.getMusicIndex(main);
+        newSong = false;
         temp = count;
         count = b1.getInt("count");
+        if(temp != count){
+            newSong = true;
+        }
+
 
         Log.i("Count", count+"");
 
@@ -86,6 +92,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         musicCompletionReceiver = new MusicCompletionReceiver(this);
+
 
     }
 
@@ -198,6 +205,10 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MyBinder binder = (MusicService.MyBinder) iBinder;
             musicService = binder.getService();
+            if(newSong){
+                musicService.pauseMusic();
+                musicService.setPlayingStatus(0);
+            }
             isBound = true;
 
             switch (musicService.getPlayingStatus()) {
@@ -208,6 +219,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     play.setText("Pause");
                     break;
                 case 2:
+
                     play.setText("Play");
                     break;
             }
